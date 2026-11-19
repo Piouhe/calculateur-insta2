@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>📊 Calculateur Instagram — Où en est ton compte ?</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; background: linear-gradient(160deg, #fdf1f6, #f4f4f6); color: #1a1a2e; min-height: 100vh; padding: 20px 14px; }
+  .wrap { max-width: 560px; margin: 0 auto; }
+  .hero { background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); border-radius: 20px; padding: 28px 26px; color: #fff; text-align: center; }
+  .hero h1 { font-size: 24px; }
+  .hero p { font-size: 13.5px; opacity: .95; margin-top: 8px; line-height: 1.5; }
+  .card { background: #fff; border-radius: 16px; padding: 22px; margin-top: 16px; box-shadow: 0 4px 18px rgba(188,24,136,.08); }
+  h2 { font-size: 15px; margin-bottom: 14px; color: #bc1888; }
+  label { display: block; font-size: 12.5px; color: #555; margin: 12px 0 4px; font-weight: 600; }
+  input { width: 100%; padding: 11px 13px; border: 1.5px solid #f2c7dc; border-radius: 10px; font-size: 15px; outline: none; }
+  input:focus { border-color: #bc1888; }
+  .hint { font-size: 10.5px; color: #999; margin-top: 3px; }
+  /* 🟡 Boutons cliquables : jaune doré */
+  .btn { width: 100%; margin-top: 18px; padding: 14px; border: none; border-radius: 12px; background: linear-gradient(45deg, #f2b705, #e39a00); color: #fff; font-size: 15px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 12px rgba(227,154,0,.3); }
+  .btn:active { transform: scale(.99); }
+  .btn-mail { width: 100%; margin-top: 12px; padding: 13px; border: none; border-radius: 12px; background: #fff; border: 1.5px solid #e8a800; color: #b37c00; font-size: 14px; font-weight: bold; cursor: pointer; }
+  #result { display: none; }
+  .score-box { text-align: center; padding: 18px 0 6px; }
+  .score { font-size: 44px; font-weight: 900; }
+  .verdict { display: inline-block; padding: 5px 16px; border-radius: 20px; color: #fff; font-size: 12.5px; font-weight: bold; margin-top: 6px; }
+  .v-bad { background: #dc2743; } .v-mid { background: #d18b00; } .v-good { background: #2d9e52; }
+  .bar { height: 14px; background: #f0e0ea; border-radius: 10px; margin: 16px 6px; overflow: hidden; }
+  .bar > div { height: 100%; width: 0; border-radius: 10px; background: linear-gradient(90deg, #f09433, #dc2743, #bc1888); transition: width 1s; }
+  .zone { display: flex; justify-content: space-between; font-size: 10px; color: #999; margin: 4px 6px; }
+  .stat { display: flex; justify-content: space-between; font-size: 13.5px; padding: 9px 2px; border-bottom: 1px solid #f7ecf2; }
+  .stat b { color: #bc1888; }
+  .tips { margin: 4px 0 0 16px; font-size: 13px; color: #444; line-height: 1.6; }
+  .cta { background: linear-gradient(45deg, #f09433, #dc2743, #bc1888); border-radius: 16px; padding: 22px; margin-top: 16px; color: #fff; text-align: center; }
+  .cta h3 { font-size: 16px; margin-bottom: 6px; }
+  .cta p { font-size: 12.5px; opacity: .95; line-height: 1.5; }
+  /* 🟡 Boutons d'offre cliquables : jaune doré */
+  .cta-btn { display: inline-block; background: linear-gradient(45deg, #f2b705, #e39a00); border: none; color: #fff; font-weight: bold; padding: 11px 26px; border-radius: 30px; margin-top: 12px; font-size: 13.5px; text-decoration: none; box-shadow: 0 4px 12px rgba(227,154,0,.3); }
+  .cta2 { display: inline-block; background: #fff; border: 1.5px solid #e8a800; color: #b37c00; font-weight: bold; padding: 10px 26px; border-radius: 30px; margin-top: 10px; font-size: 13px; text-decoration: none; }
+  .small { font-size: 10.5px; color: #999; text-align: center; margin-top: 14px; line-height: 1.5; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="hero">
+    <h1>📊 Où en est ton Instagram ?</h1>
+    <p>Entre tes chiffres (visible dans tes Statistiques, compte pro) et découvre en 10 secondes si ton compte accroche — et ce que ça cache.</p>
+  </div>
+
+  <div class="card" id="form">
+    <h2>✍️ Tes chiffres (28 derniers jours)</h2>
+    <label>Nombre d'abonnés</label>
+    <input type="number" min="0" id="followers" placeholder="ex. 1200">
+    <label>Likes moyens par publication</label>
+    <input type="number" min="0" id="likes" placeholder="ex. 45">
+    <label>Commentaires moyens par publication</label>
+    <input type="number" min="0" id="comments" placeholder="ex. 6">
+    <label>Enregistrements moyens par publication <span style="color:#99a">(optionnel)</span></label>
+    <input type="number" min="0" id="saves" placeholder="ex. 12">
+    <label>Portée moyenne par publication <span style="color:#99a">(optionnel — stats de ton post)</span></label>
+    <input type="number" min="0" id="reach" placeholder="ex. 850">
+    <div class="hint">💡 Pas grave si tu laisses certains champs vides : je te dirai où trouver ces chiffres dans le résultat.</div>
+    <button class="btn" onclick="calc()">Analyser mon compte →</button>
+  </div>
+
+  <div class="card" id="result">
+    <div class="score-box">
+      <div class="score" id="score">—</div>
+      <div style="font-size:12px;color:#99a">Ton taux d'engagement (par abonné)</div>
+      <span class="verdict v-mid" id="verdict">…</span>
+    </div>
+    <div class="bar"><div id="barfill"></div></div>
+    <div class="zone"><span>Début</span><span>Moyenne de ta taille</span><span>Top !</span></div>
+    <div style="margin-top:14px">
+      <div class="stat"><span>📊 Moyenne comptes de ta taille</span><b id="moyenne">—</b></div>
+      <div class="stat"><span>🛡️ Marge pour progresser</span><b id="marge">—</b></div>
+      <div class="stat" id="reachrow" style="display:none"><span>🎯 Engagement par rapport à ta portée</span><b id="erreach">—</b></div>
+    </div>
+    <h2 style="margin-top:18px">🔎 Ce que ça veut dire pour toi</h2>
+    <ul class="tips" id="tips"></ul>
+
+    <!-- 📩 Zone de capture email (envoi vers Brevo) -->
+    <div id="zone-mail" style="display:none; border-top:1px solid #f7ecf2; margin-top:18px; padding-top:14px">
+      <h2>📩 Reçois ton diagnostic complet par email</h2>
+      <label>Ton email</label>
+      <input type="email" id="mail-user" placeholder="ton@email.com">
+      <label style="display:flex; align-items:flex-start; gap:8px; font-weight:400; font-size:12px; color:#666; margin-top:10px; cursor:pointer">
+        <input type="checkbox" id="consentement" style="width:auto; margin-top:1px">
+        <span>J'accepte de recevoir tes conseils et offres par email (désinscription possible à tout moment)</span>
+      </label>
+      <button class="btn" style="margin-top:12px" id="btn-brevo" onclick="envoyerEmail()">📊 Recevoir mon diagnostic par email →</button>
+      <div class="hint" id="zone-mail-msg" style="margin-top:8px"></div>
+    </div>
+    <div class="cta">
+      <h3>🚀 Ce diagnostic n'est que la surface</h3>
+      <p id="ctatext">Ton rapport complet analyse tes 12 derniers contenus, tes horaires, ton audience et te donne un plan sur 90 jours.</p>
+      <a class="cta-btn" id="lnkMini" href="#">Je veux mon audit complet →</a><br>
+      <a class="cta2" id="lnkDeco" href="#">Ou commencer par l'audit Découverte à 12 €</a>
+    </div>
+    <div class="small">Benchmarks indicatifs basés sur des moyennes observées par taille de compte (comptes entrepreneurs / créateurs). Ton email sert uniquement à recevoir ton diagnostic et, avec ton accord, des conseils pour progresser. © <span id="marqueTxt"></span></div>
+  </div>
+
+  <div class="card" style="margin-top:16px">
+    <h2>📍 Où trouver ces chiffres ?</h2>
+    <ul class="tips">
+      <li>Passe ton compte en <b>compte professionnel</b> (gratuit) : Paramètres → Type de compte</li>
+      <li>Abonnés : affiché sur ton profil</li>
+      <li>Likes/commentaires moyens : regarde tes 5 derniers posts et fais une moyenne</li>
+      <li>Portée : ouvre un post → « Voir les statistiques » → Portée</li>
+    </ul>
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   ⚙️ CONFIGURATION — TOUT SE MODIFIE ICI (liens, titres, prix)
+   Après un changement sur Netlify : il suffit de redéployer.
+   ============================================================ */
+var CONFIG = {
+  /* Tes liens de paiement Stripe */
+  lienMiniAudit: "https://buy.stripe.com/aFacN7gqd0kS4RqckU4Rq01",
+  lienDecouverte: "https://buy.stripe.com/bJe28t3Dr6Jgfw40Cc4Rq00",
+
+  /* Titres de tes offres (affichés sur les boutons ET dans l'email) */
+  titreMiniAudit: "Je veux mon audit complet →",
+  titreDecouverte: "Ou commencer par l'audit Découverte à 12 €",
+
+  /* Nom affiché en bas de page et dans l'email */
+  marque: "PAULINE / PNL MEDIA.RÉSEAUX"
+};
+
+function b(f) {
+  if (f < 1000) return [5.5, "Audience encore réduite : l\u2019engagement DOIT \u00EAtre \u00E9lev\u00E9, tes 500 premiers abonn\u00E9s sont ta plus belle vitrine"];
+  if (f < 5000) return [4.0, "Les comptes qui d\u00E9collent gardent un engagement fort \u2014 c\u2019est ce qui attire l\u2019algorithme"];
+  if (f < 20000) return [2.8, "La zone o\u00F9 la plupart des comptes plafonnent faute de strat\u00E9gie claire"];
+  if (f < 100000) return [2.0, "\u00C0 cette taille, seuls les comptes strat\u00E9giques maintiennent un bon niveau"];
+  return [1.5, "Gros compte : sans contenu calibr\u00E9 finement, l\u2019engagement fond vite \u00E0 cette \u00E9chelle"];
+}
+
+/* Résultats conservés pour l'envoi email */
+
+/* Résultats conservés pour l'envoi vers Brevo */
+var DERNIER_RESULTAT = null;
+
+function calc() {
+  var f = parseFloat(document.getElementById('followers').value);
+  var l = parseFloat(document.getElementById('likes').value || 0);
+  var c = parseFloat(document.getElementById('comments').value || 0);
+  var s = parseFloat(document.getElementById('saves').value || 0);
+  var r = parseFloat(document.getElementById('reach').value || 0);
+  if (!f || f <= 0 || (!l && !c)) { alert('Indique au moins ton nombre d\u2019abonn\u00E9s et tes likes moyens \u{1F60A}'); return; }
+  var er = (l + c + s) / f * 100;
+  var ref = b(f)[0];
+  var ratio = er / ref;
+  var sc = Math.max(0, Math.min(100, Math.round(ratio * 40)));
+  document.getElementById('score').textContent = er.toFixed(2).replace('.', ',') + ' %';
+  var v = document.getElementById('verdict');
+  if (ratio < 0.6) { v.className = 'verdict v-bad'; v.textContent = '\u{1F6A8} En dessous de la moyenne \u2014 mais r\u00E9cup\u00E9rable !'; }
+  else if (ratio < 1.1) { v.className = 'verdict v-mid'; v.textContent = '\u{1F3AF} Dans la moyenne de ta taille'; }
+  else { v.className = 'verdict v-good'; v.textContent = '\u{1F389} Au-dessus de la moyenne, bravo !'; }
+  document.getElementById('barfill').style.width = sc + '%';
+  document.getElementById('moyenne').textContent = '\u2248 ' + ref.toFixed(1).replace('.', ',') + ' %';
+  document.getElementById('marge').textContent = er >= ref ? 'Tu es d\u00E9j\u00E0 \u2248 ' + Math.round((ratio - 1) * 100) + ' % au-dessus' : '\u{1F4C9} \u{1F4C8} Il te manque \u2248 ' + Math.round((1 - ratio) * 100) + ' % pour atteindre la moyenne';
+  document.getElementById('form').style.display = 'none';
+  var tips = document.getElementById('tips');
+  tips.innerHTML = '';
+  var t = [];
+  if (ratio < 0.6) t.push('\u{1F680} Ton contenu touche tes abonn\u00E9s mais ne les fait pas r\u00E9agir : le probl\u00E8me est presque toujours l\u2019accroche des premi\u00E8res secondes (image 1 d\u2019un carrousel, 3 premi\u00E8res secondes d\u2019un Reel). C\u2019est exactement ce que l\u2019audit D\u00E9couverte identifie en priorit\u00E9.');
+  if (ratio >= 0.6 && ratio < 1.1) t.push('\u{1F4CC} Tu es dans la moyenne \u2014 c\u2019est pr\u00E9cis\u00E9ment l\u00E0 que 90 % des comptes restent bloqu\u00E9s des ann\u00E9es : sans corriger 2 ou 3 d\u00E9tails (horaires, formats, accroches), tu risques de stagner \u00E0 ce niveau tr\u00E8s longtemps.');
+  if (ratio >= 1.1) t.push('\u2705 Ton audience r\u00E9agit bien \u2014 mais attention : un bon taux d\u2019engagement ne dit pas si tu convertis (DM, ventes, clients). L\u2019audit complet v\u00E9rifie exactement ce qui coince entre audience et r\u00E9sultats.');
+  if (s > 0 && s >= l * 0.3) t.push('\u{1F4BE} Ton taux d\u2019enregistrement est \u00E9lev\u00E9 : ton contenu a de la valeur per\u00E7ue \u2014 capitalise dessus avec des carrousels \u00E9ducatifs.');
+  if (c < l * 0.05) t.push('\u{1F4AC} Tr\u00E8s peu de commentaires par rapport aux likes : pose une question directe dans ta l\u00E9gende, \u00E7a se r\u00E9cup\u00E8re vite.');
+  if (r > 0) {
+    var err2 = (l + c + s) / r * 100;
+    document.getElementById('reachrow').style.display = 'flex';
+    document.getElementById('erreach').textContent = err2.toFixed(1).replace('.', ',') + ' %';
+    if (err2 >= 8) t.push('\u{1F525} ' + err2.toFixed(1).replace('.', ',') + ' % des personnes touch\u00E9es interagissent : excellent, l\u2019algorithme va te pousser.');
+    else if (err2 < 4) t.push('\u{1F4C9} Seulement ' + err2.toFixed(1).replace('.', ',') + ' % des personnes touch\u00E9es r\u00E9agissent : ta port\u00E9e s\u2019\u00E9puise sur des contenus qui n\u2019accrochent pas.');
+  }
+  for (var i = 0; i < t.length; i++) { var li = document.createElement('li'); li.textContent = t[i]; tips.appendChild(li); }
+  document.getElementById('ctatext').textContent = ratio < 1.1 ? 'Ton rapport complet identifie exactement quoi corriger : tes 12 derniers contenus, tes horaires, ton audience, et un plan sur 90 jours.' : 'Tu as une bonne base : le mini-audit t\u2019aide \u00E0 passer au niveau sup\u00E9rieur \u2014 port\u00E9e et conversion.';
+  document.getElementById('result').style.display = 'block';
+  document.getElementById('result').scrollIntoView({ behavior: 'smooth' });
+  document.getElementById('zone-mail').style.display = 'block';
+
+  /* Mémorise les résultats pour l'envoi vers Brevo */
+  DERNIER_RESULTAT = {
+    er: er,
+    ref: ref,
+    ratio: ratio,
+    verdict: v.textContent,
+    reach: r > 0 ? ((l + c + s) / r * 100) : null,
+    conseils: t.slice(),          /* les commentaires associés au résultat */
+    abonnes: f, likes: l, commentaires: c, enregistrements: s, portee: r  /* les infos saisies */
+  };
+}
+
+/* 📩 Envoie l'email + le score au serveur, qui les transmet à Brevo */
+function envoyerEmail() {
+  if (!DERNIER_RESULTAT) return;
+  var mail = document.getElementById('mail-user').value.trim();
+  var consent = document.getElementById('consentement').checked;
+  var msg = document.getElementById('zone-mail-msg');
+  if (!mail || mail.indexOf('@') === -1) { msg.textContent = 'Indique une adresse email valide 😊'; msg.style.color = '#dc2743'; return; }
+  if (!consent) { msg.textContent = 'Coche la case de consentement pour continuer 😊'; msg.style.color = '#dc2743'; return; }
+  document.getElementById('btn-brevo').disabled = true;
+  document.getElementById('btn-brevo').textContent = 'Envoi en cours…';
+  fetch('/.netlify/functions/abonnement-brevo', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      email: mail,
+      score: DERNIER_RESULTAT.er.toFixed(2).replace('.', ',') + ' %',
+      verdict: DERNIER_RESULTAT.verdict,
+      moyenne: DERNIER_RESULTAT.ref.toFixed(1).replace('.', ',') + ' %',
+      conseils: DERNIER_RESULTAT.conseils,
+      abonnes: DERNIER_RESULTAT.abonnes,
+      likes: DERNIER_RESULTAT.likes,
+      commentaires: DERNIER_RESULTAT.commentaires,
+      enregistrements: DERNIER_RESULTAT.enregistrements,
+      portee: DERNIER_RESULTAT.portee
+    })
+  })
+  .then(function (rep) {
+    /* Le serveur a répondu : on lit le statut pour distinguer les causes */
+    if (rep.ok) return rep.json();
+    if (rep.status === 404) throw { serveur: true, cause: 'fonction manquante' };
+    return rep.json().catch(function () { return {}; }).then(function (d) {
+      throw { serveur: true, cause: d.erreur || 'erreur serveur ' + rep.status };
+    });
+  })
+  .then(function () {
+    msg.textContent = '\u{1F4E2} C\'est envoy\u00E9 ! Ton diagnostic complet arrive dans ta bo\u00EEte mail. Pense \u00E0 v\u00E9rifier tes courriers ind\u00E9sirables au cas o\u00F9 \u{1F60A}';
+    msg.style.color = '#2d9e52';
+    document.getElementById('btn-brevo').textContent = '\u{2705} Diagnostic envoy\u00E9 !';
+  })
+  .catch(function (e) {
+    /* Cause serveur identifiée : afficher un message utile plutôt que d'ouvrir
+       la messagerie, pour que l'utilisateur garde confiance et réessaie. */
+    if (e && e.serveur) {
+      msg.textContent = '\u{26A0} Oups, petite panne technique de notre c\u00F4t\u00E9 (riposte : ' + e.cause + '). R\u00E9essaie dans un instant.';
+      msg.style.color = '#dc2743';
+      document.getElementById('btn-brevo').disabled = false;
+      document.getElementById('btn-brevo').textContent = '\u{1F4E} Recevoir mon diagnostic par email \u2192';
+      return;
+    }
+    /* Plan B : dernier recours absolu : aucun serveur joignable du tout (ex. aperçu local) */
+    var sujet = 'Ton diagnostic Instagram : ' + DERNIER_RESULTAT.er.toFixed(2).replace('.', ',') + ' % d\u2019engagement \u{1F4C9}';
+    var corps =
+      'Voici ton diagnostic Instagram :' + '\n\n' +
+      '\u{1F4C8} Ton taux d\u2019engagement : ' + DERNIER_RESULTAT.er.toFixed(2).replace('.', ',') + ' %' + '\n' +
+      '\u{1F3AF} Ton bilan : ' + DERNIER_RESULTAT.verdict + '\n' +
+      '\u{1F4CA} Moyenne des comptes de ta taille : \u2248 ' + DERNIER_RESULTAT.ref.toFixed(1).replace('.', ',') + ' %' + '\n\n' +
+      '--------------------------------' + '\n' +
+      '\u{1F525} ENVIE D\u2019ALLER PLUS LOIN ?' + '\n\n' +
+      'Audit D\u00E9couverte : ' + CONFIG.lienDecouverte + '\n' +
+      'Audit complet : ' + CONFIG.lienMiniAudit;
+    window.location.href = 'mailto:' + encodeURIComponent(mail) +
+      '?subject=' + encodeURIComponent(sujet) +
+      '&body=' + encodeURIComponent(corps);
+    msg.textContent = '\u{1F4E9} Ton logiciel de messagerie s\u2019est ouvert avec ton diagnostic pr\u00E9-rempli : clique sur Envoyer !';
+    msg.style.color = '#2d9e52';
+    document.getElementById('btn-brevo').textContent = '\u2705 Diagnostic pr\u00EAt \u00E0 envoyer';
+  });
+}
+
+/* Applique la configuration (liens, titres, marque) aux boutons et textes */
+(function () {
+  document.getElementById('lnkMini').href = CONFIG.lienMiniAudit;
+  document.getElementById('lnkMini').textContent = CONFIG.titreMiniAudit;
+  document.getElementById('lnkDeco').href = CONFIG.lienDecouverte;
+  document.getElementById('lnkDeco').textContent = CONFIG.titreDecouverte;
+  document.getElementById('marqueTxt').textContent = CONFIG.marque;
+})();
+</script>
+</body>
+</html>
